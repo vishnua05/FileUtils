@@ -2,14 +2,14 @@ package com.parser.file_utils;
 
 import java.util.Collection;
 
-public class App {
+public class ExcelApp {
 	public static void main(String[] args) {
-		IParser parser = new ExcelParser();
+		IParser excelParser = new ExcelParser();
 		String inputPath = "/media/vishnuvardhanreddya/EEA06B5AA06B2873/Java Softwares/Excel/student.xls";
-		Collection<Student> StudentDetails = parser.read(inputPath, Student.class);
-		System.out.println(StudentDetails);
+		Collection<Student> StudentDetails = excelParser.read(inputPath, Student.class);
+		System.out.println("StudentExcel Details:"+StudentDetails);
 		String outputFilePath = "/media/vishnuvardhanreddya/EEA06B5AA06B2873/Java Softwares/Excel/studentoutput.xlsx";
-		parser.write(outputFilePath, StudentDetails);
+		excelParser.write(outputFilePath, StudentDetails);
 		System.out.println("Data successfully written to Excel.Thank you");
 	}
 }

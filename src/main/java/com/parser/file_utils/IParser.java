@@ -8,4 +8,5 @@ public interface IParser {
  
 	public <T> Collection<T> read(String file, Class<T> className);
  	public <T> byte[] write(String file, Collection<T> writeData);
+ 	
 }
