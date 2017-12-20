@@ -10,5 +10,6 @@ public class CSVApp {
 		System.out.println("StudentCSVDetails:"+studentCSVDetails);
 		String outputCSV = "/media/vishnuvardhanreddya/EEA06B5AA06B2873/Java Softwares/Excel/student1.csv";
 		csvParser.write(outputCSV, studentCSVDetails);
+		System.out.println("Successfully written to CSV");
 	}
 }

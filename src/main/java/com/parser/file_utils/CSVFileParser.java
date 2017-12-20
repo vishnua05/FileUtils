@@ -6,7 +6,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.lang.reflect.Field;
 import java.sql.Timestamp;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -44,7 +43,6 @@ public class CSVFileParser implements IParser {
 
 		while (iterator.hasNext()) {
 			record = iterator.next();
-			int i = 0;
 			Iterator<String> list = record.iterator();
 			String recordDetails = null;
 			while (list.hasNext()) {
@@ -78,7 +76,6 @@ public class CSVFileParser implements IParser {
 									try {
 										format = new SimpleDateFormat("dd/MM/yy").parse(recordDetails);
 									} catch (ParseException e) {
-										// TODO Auto-generated catch block
 										e.printStackTrace();
 									}
 
@@ -96,7 +93,6 @@ public class CSVFileParser implements IParser {
 						dataRecords.add(object);
 					}
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 
@@ -111,8 +107,8 @@ public class CSVFileParser implements IParser {
 		try {
 			String name = null;
 			BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(filePath));
-			CSVPrinter csvPrinter = new CSVPrinter(bufferedWriter, CSVFormat.DEFAULT);
-			Iterator iterator = writeData.iterator();
+			CSVPrinter csvPrinter = null;
+			Iterator<T> iterator = writeData.iterator();
 			Class<? extends Object> class1 = iterator.next().getClass();
 			Field[] fields = class1.getDeclaredFields();
 			Collection<Field> listOfFields = new ArrayList<Field>();
@@ -126,7 +122,7 @@ public class CSVFileParser implements IParser {
 				bufferedWriter.append(",");
 			}
 			bufferedWriter.newLine();
-			new CSVPrinter(bufferedWriter, CSVFormat.DEFAULT);
+			csvPrinter = new CSVPrinter(bufferedWriter, CSVFormat.DEFAULT);
 			for (Object object : writeData) {
 				for (Field fieldName : listOfFields) {
 					Object value = null;
@@ -152,18 +148,15 @@ public class CSVFileParser implements IParser {
 					}
 
 				}
-				new CSVPrinter(bufferedWriter, CSVFormat.DEFAULT);
+				csvPrinter = new CSVPrinter(bufferedWriter, CSVFormat.DEFAULT);
 				bufferedWriter.newLine();
 			}
-			/*
-			 * while (iterator.hasNext()) { Object object = (Object) iterator.next();
-			 * 
-			 * }
-			 */
+		
 			csvPrinter.flush();
-
+			if(csvPrinter != null) {
+				csvPrinter.close();
+			}
 		} catch (Exception e) {
-			// TODO: handle exception
 			e.printStackTrace();
 		}
 		return null;
