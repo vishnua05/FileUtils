@@ -1,7 +1,9 @@
 package com.parser.file_utils;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.lang.reflect.Field;
 import java.sql.Timestamp;
 import java.text.DateFormat;
@@ -15,6 +17,7 @@ import java.util.List;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.csv.CSVRecord;
 
 public class CSVFileParser implements IParser {
@@ -104,8 +107,67 @@ public class CSVFileParser implements IParser {
 	}
 
 	@Override
-	public <T> byte[] write(String file, Collection<T> writeData) {
+	public <T> byte[] write(String filePath, Collection<T> writeData) {
+		try {
+			String name = null;
+			BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(filePath));
+			CSVPrinter csvPrinter = new CSVPrinter(bufferedWriter, CSVFormat.DEFAULT);
+			Iterator iterator = writeData.iterator();
+			Class<? extends Object> class1 = iterator.next().getClass();
+			Field[] fields = class1.getDeclaredFields();
+			Collection<Field> listOfFields = new ArrayList<Field>();
+			for (Field field : fields) {
+				listOfFields.add(field);
+			}
+
+			for (Field fieldName : listOfFields) {
+				name = fieldName.getName();
+				bufferedWriter.append(name);
+				bufferedWriter.append(",");
+			}
+			bufferedWriter.newLine();
+			new CSVPrinter(bufferedWriter, CSVFormat.DEFAULT);
+			for (Object object : writeData) {
+				for (Field fieldName : listOfFields) {
+					Object value = null;
+					try {
+						fieldName.setAccessible(true);
+						value = fieldName.get(object);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					if (value != null) {
+						if (value instanceof String) {
+							bufferedWriter.write(value.toString());
+						} else if (value instanceof Long) {
+							bufferedWriter.append(value.toString());
+						} else if (value instanceof Integer) {
+							bufferedWriter.append(value.toString());
+						} else if (value instanceof Double) {
+							bufferedWriter.append(value.toString());
+						} else if (value instanceof Timestamp) {
+							bufferedWriter.append(value.toString());
+						}
+						bufferedWriter.append(",");
+					}
+
+				}
+				new CSVPrinter(bufferedWriter, CSVFormat.DEFAULT);
+				bufferedWriter.newLine();
+			}
+			/*
+			 * while (iterator.hasNext()) { Object object = (Object) iterator.next();
+			 * 
+			 * }
+			 */
+			csvPrinter.flush();
+
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
 		return null;
+
 	}
 
 }
